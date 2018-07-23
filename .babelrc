@@ -1,0 +1,18 @@
+{
+  "presets": [
+    [
+      "es2015",
+      {
+        "targets": {
+          "node": true
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "syntax-async-functions",
+    "transform-class-properties",
+    "transform-function-bind",
+    "transform-regenerator"
+  ]
+}

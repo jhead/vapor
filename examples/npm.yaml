@@ -1,0 +1,37 @@
+#
+# Search for an npm package, go to GitHub page, get branch count.
+#
+# Output:
+# [ { package: '/package/debug' },
+# { repo: 'https://github.com/visionmedia/debug' },
+# { branchCount: [ '4' ] } ]
+#
+name: npm-example
+url: https://www.npmjs.com
+concurrency: 1
+flows:
+- name: Search
+  request:
+    url: /search?q=debug
+    method: get
+  extract:
+    package:
+    - select "[class*=package-list-item] a" {0,}[0]
+    - read property href
+- name: Get debug package repo
+  request:
+    url: "{package}"
+    method: get
+  extract:
+    repo:
+    - select "a[class*=sidebarLink]" {1}[0]
+    - read property href
+- name: GitHub page
+  request:
+    url: "{repo}"
+    method: get
+  extract:
+    branchCount:
+    - select ".stats-switcher-wrapper a[href*=branches] span" {0,}[0]
+    - read property textContent
+    - trim

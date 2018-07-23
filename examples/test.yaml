@@ -1,0 +1,52 @@
+#
+# Search for an npm package, go to GitHub page, get branch count.
+#
+# Output:
+# [ { package: '/package/debug' },
+# { repo: 'https://github.com/visionmedia/debug' },
+# { branchCount: [ '4' ] } ]
+#
+name: npm-example
+url: https://www.npmjs.com
+concurrency: 2
+delay: 100
+flows:
+- name: Search
+  request:
+    url: /search?q=debug
+    method: get
+  extract:
+    packages:
+    - select "[class*=package-list-item] a[href*=package]" {0,}
+    - read property href
+    - split / 2
+- name: Get debug package repo
+  foreach: packages
+  request:
+    url: "/package/{foreach}"
+    method: get
+  extract:
+    repo:
+    - select "a[class*=sidebarLink]" {0,}[0]
+    - read property href
+# - name: GitHub page
+#   request:
+#     url: "{repo}"
+#     method: get
+#   extract:
+#     files:
+#     - select "table.files td:nth-of-type(2) a" {0,}
+#     - read property textContent
+# - name: File size
+#   foreach: files
+#   request:
+#     url: "{repo}/blob/master/{foreach}"
+#     method: get
+#   extract:
+#     lines:
+#     - select ".file-info" {1}[0]
+#     - read property textContent
+#     - split " " 0
+#     # - select ".stats-switcher-wrapper a[href*=branches] span" {0,}[0]
+#     # - read property textContent
+#     # - trim
