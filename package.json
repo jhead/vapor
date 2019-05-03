@@ -1,6 +1,6 @@
 {
   "name": "@jhead/vapor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Multi-stage web scraping and data extraction with simple and declarative YAML.",
   "main": "index.js",
   "directories": {
